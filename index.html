@@ -12,7 +12,7 @@
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;font-family:"Ford Antenna","FordAntenna","Segoe UI",Arial,sans-serif;color:var(--ink);background:var(--grey)}
 header{height:60px;background:var(--navy);color:var(--white);display:flex;align-items:center;padding:0 18px;gap:16px}
-.brand{font-weight:700;font-size:20px;letter-spacing:.5px;border:2px solid var(--white);border-radius:30px;padding:4px 16px}
+.brand{background:#00095B;display:flex;align-items:center;height:60px;padding:0 4px}.brand img{height:44px;width:auto;display:block}
 /* Replace .brand with the approved Ford oval asset – do not redraw the oval */
 header h1{font-size:18px;font-weight:400;margin:0}
 header .sp{flex:1}
@@ -66,14 +66,30 @@ button,select{font-family:inherit}
 .comp{cursor:grab}
 .mode{cursor:pointer}
 .probe{cursor:grab}
+#tourShade{position:fixed;inset:0;z-index:50;display:none}
+#tourBlock{position:fixed;inset:0;z-index:50}
+#tourHole{position:fixed;border-radius:10px;box-shadow:0 0 0 9999px rgba(0,20,46,.72);border:3px solid var(--blue);transition:all .3s ease;pointer-events:none;z-index:51}
+#tourBox{position:fixed;z-index:52;width:340px;max-width:calc(100vw - 20px);background:var(--white);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.35);overflow:hidden;transition:top .3s,left .3s}
+#tourBox .th{background:var(--navy);color:#fff;padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
+#tourBox .th b{font-size:15px}
+#tourBox .th span{font-size:12px;color:#9fb7ff}
+#tourBox .tb{padding:12px 14px;font-size:13.5px;line-height:1.5;color:var(--ink);max-height:55vh;overflow-y:auto}
+#tourBox .tb ul{padding-left:18px;margin:6px 0}
+#tourBox .tf{display:flex;gap:6px;align-items:center;padding:10px 14px;background:var(--grey)}
+#tourBox .tf .sp{flex:1}
+#tourBox .dots{display:flex;gap:4px;padding:0 14px 10px;flex-wrap:wrap}
+#tourBox .dots i{width:7px;height:7px;border-radius:50%;background:#cfd3e0}
+#tourBox .dots i.on{background:var(--blue)}
+#tourBox .try{background:#e8f1fe;border-left:4px solid var(--blue);padding:6px 8px;border-radius:4px;margin-top:8px;font-size:12.5px}
 @media (max-width:1100px){#app{grid-template-columns:200px 1fr 280px}}
 </style>
 </head>
 <body>
 <header>
-  <div class="brand" title="Replace with approved Ford logo asset">Ford</div>
+  <div class="brand"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAAAzCAIAAACfX5SXAAAOxUlEQVR4nO1bf1AbV37/qiatI5xqk0hjJ/Zo1xNP4iVYEpGP4rO1CNs5KykKgnGG8yAKTDOQjGmQmobmomkx7ciTctcI5+xOoZdDVHJ85K4gH75anH9ILHbM9IwRYEfYyQ1aAo59krlVA4rngk3/+MLOVgjswz9F+MwOI3bfvvd97/Pe9/t93/ddCTxaBEtYvPiTBy3AEu4tlghe5FgieJFjieBFjiWCFzm+zQRPPWgB7gdSHrQAdx2SmR9ThExKkQqCkBIyKQAQRKpQiOcnAICPxgAgxEVCXBgkADenQCKZXWNSQ7I49sGELJUi5XqGJpVyilQAACGT8tFYiAtHozEkEmYYxafIOgCoVST+5qMxnp/oGxgO9HN+Nvgg+nH3kdwE6xlar6OzdTRy2TcwHOjjQlxYIPKPBUUqNCqlRkVm62gA6OwK+ruCSU12shEsAZiSUKS8avcOilSEuHCzu0vMKCGTml7ZmL1l/fQ6JqQhLsLzE9xwJNDPhbhIoJ+Lq1JYvrNbMxm1GhVZYtZ52nv2HegIcWGYEhmBZECSEaxn6JIiHUGk1tpbZ1OlUZFtLZYQF7FWuwXWKVJRatblGbU8H9MzNMyoYuEpIZM6XWxZRePtttsXSiJTnSQES4D4c2mNrYAiFUhewlK93fZAH4dU4foGgNJipqRIZ61244TARalWkRQpJ2TSEBc5fKTH6WJvR6sTMqmjzsxHY9Zq913t3j1EchCMI9t5atDpYucqo1GRvd32Wntr/X6vo87cNzBcv99rqTSUmHU5O+w1toLOrqCnvef2GzUZtQlVemkxU7V7R0aWDZJBXyfHPviW7AIArtcaW8HQYD0fjdXv92pUZI2tYN+BDj1Da1SkeJt0S1gqDW0tVoKQzn7kdLHWarfPa3v42YWk2AdrVCRFKua3kQDAR2MZWbYSs44bjpBKeW+3nSIVfjaIPlSIC88/P8SgSEWNraB+v3cu/9nPBkuKwoIVeJjx8BMs0TP0bD0pBiGTWioNgX7O094TqOYwvqFRkQGeKytv4KMxPUMTMqlGRQJAoJ9Dq7zvgJePxvJytegeo/tNKeV77K2OOjPPT9TaW+dptG9g2GTU1v/Y+5Av44ef4KkQF1ZvUM71mJBJmxorAKB+vxfvIKMaNZlf6OCjMUedubSYqbW3atRkXq62syuYl6slCGlTY0WIC2tUJO6g2lqsfjZIkfJsHa1naHx3HrFIpbyzK/iQswtJYYP97CAa0YRP9QxtMmqt1W6BD0ulocZW4HSxfja4x1ZgqTTkFzqQfpNRq96gRG1PyKS19tb8Qgchk7a1WJ0uNr/Q0ezu0jO0p71nfneMIhUmo9bPDt7tvt59PPwrGPjoRH6ho63FmpFlm72qhMAk/q2xFZQWM342WGtvJWTSqkqDn50OReXlagP9nLXabak0UKSifr+3xlYAABoVyUdjqJDVG5R8NFZW3oC75z2JtDQhkzY1lFur3Xx04l73/c6RBAQDQGBgOL+w3tdh23egI85XQvPc2233s0GCkGpUpJ8NlpU3AEBTYwUhk2rUJCGTlhYzeobO2WEniNSqSsO+/d499lbcCDnqzBo1CQCCMkcnCyuJg56hq3Yb9h3wetrP3Zeu3ymSYx88A4mjrkjP0HE0WyoNGLnkozGni621t/LRGDpNPD/R1mIFgEA/V1beiLaWIuU5O+yCMigtZpoayvFdS6UhxIUD/cPonYnbRmpDXLh2byvPLzDWff+RXAQDTE2BRGKpNKC75GnvERzsuTYt6FQLkUtUyHElhZiG4GkLjzQq0mTUZuvozq6g08WGhq8l10FyshEsAo67nqH9bBDPkebfTd0mcEKgO40z4/CRnkA/l0SrVowkJngaU6BRkxo1SSnleG6IZ0eh4Qgu0xAXAQDhdAFmPDIAIIhUQialSDkeOchkUmF9c8MRPxsM9HMgkcBUMi3ZOCQ/wXGYAopSaFRKAEB9SyrlGKScyeuQ8vx0CgCyzg1H+Ggs0MeJT5lAklyaeE4sOoJnY2oKJJIEEYkpCUzdTKKDv4UhObZJdwSkMMFyXIQZWLORBJGsJdwJlghe5EhA8KqVMj1Dr1opE98kZNLZN+8PUlKWZWWu0zO0cGF4csEgZNLebntpMTNPAY2KxDOoO2lIjNJiprfbPldE/d4hAcFZmet8Xpvhe2rxTY2a9Hlt33910/0SbBopKcu++OyDM/49Pq9NuErNujusVqMiKaV8rqc1tgJfh83ntWGw+m5BoyITZhDcUzzsTtbGF9auWin795+caPlFt3ATt7b3Diaj1uliTUZtaTGTROlXCbFAgvGMPc+oxc8ChFHweW3NB7uuXOELd2ZRpCLQz2FkGAAONe8eGR07feZSiZk5f+GLa2Pjebnav/nb5vOfjuC75l2b/7pEb9z5r+Pj14WGli9/BAAuXvoyYXIFHt0DQIgL1+5tw8iGRkU66sz/8E+/+EuDZst3n91VcmBkdAwjyRQpD/Rx+w50zNM1k1FLkYrOriAA4LmTOK5ZWsz8xXeeoUjF4MXLmCmAwW3cW2P+Xpx4Qs62uBXMxtUztJD1J0j+9rsf5b6UsXnTsyOjYw0fnjx7buidvzNu3vTs5OSND51+T3tP7ksZb1W9bK87fPzkeaxt+9Z0W3Xe2+9+dPbcUFx3FuJkoQ2rqjTwfIwi5Zi+hI/0DL274sW2Fqtc/tiqlTJLpeHo4eqUlGUAkJW57vXXtv384JuETMoNR86eG9IzdOHOLKHat6peBgAxu/OjqaG8qaEcAPhorLSYGQo60MIRhFTP0G0tlp35mXw0dv36Nyajtq3FiqOpZ+jebvs81WI4zNPegxybjFq8n5KyzOe1NTWUl5qZFal/lvtSxvT3L/xEiItgloEgEgA46sxNDeUEIeX5CZNR66gzC02YjFpfhw2PNTUqZVNDObaCkrs+fKPo+5snb9w079p87Mg7Rz1vV+3eMTl5Q6+j21qsuS9lcMOR9c89vUtkLot3bXn88dThL67N7k6CFYxxn7xcrdhKkUo5zGSH47zOMdhxVTU1lJcWM8JM3/jC2vxCBx6Yt7VYTUbtumdWDl68DAArVix/Mfc9nHePPvqn7KnB7VvT9/7wl19//Yet+jRVuvLNt/7zFqzOQKMiS4sZIZ+ZkEl//2VjW4tlLT091UZGxzbp91y//g0AoCnNyLKhhCjVXDWbjFrPL88CAPYuW0djssDrr23VM/R7P2q31x0Wz0JxsthQ0GF6ZWNZRSOK52nvwVMpQiYdGqwXilXtNgDA2vUWzMAdCjqaGis8T03PjOXLH9nwnR+Mj1/fmZ/584Nvbt+avmHjO+c/HaFIxVDQUWLWvVr0wbETAznZaWspxVAonEav3r71+Y9aPvld+H9ndyfBCsaJaTJqa2wFwoU+J3qV2To6xIV5PqZRkRoVicpHGLLIta+OHA3g718d7QUAwfceGR0TtMrXX//h1ycGsjLX5TBpALBNnz56eey473zCQXfUmadibuHavOlZTGE/fGQ674KPxvxsEEPKeOe/PL9BdjE/y88GBU0rvDUbqJ+xANaJDQGA4Xvqq7+LNrk6Z+sY9LpNRm2gf1oPowfe7J5Ot+ajMZw0KA8ekKBgKJv4WynvsX5sAvXt4MXLaMVCXDjEheVPPgYAx06eX0spcrLTAGB7TvrTTz1+7GTioZvTBpdVNIrNiZ6hfV7bjIhyilTMpej8bHBy8gb+nrxxU/wocu0r8b/N7q49toIXt6X/d0fgr4q2nPrk4sVLXyas8ydO/+kzl4R/+waGd+ZnAoAwoADQ2RUU76BGRscEafGpWMK5ej2j5FNxvoa4MG7M/GxQvUE5FApf+uyKuDxFKhx15ukPJvgJPJOGGYUnFk+wwUikyaiN0yJCVu8J3wXx/eP//1/EoY/PvP8vRcaXX/hpc+erBZmBfu7XxwcS9mghThYfjfHR2Nr1loRP5zKis7NtRkbHjvsu7MzP/JU3sGb1Ewd/9slcLV74dCQukSMajQGAnqGdrul1qVaR2ErcViTQxwGAOG0PjyISosSsAwDBjk7fLNL52eDo5d/Ln3xszeonhKkDAI46s8mozTHY8azC57Vhcshs8fBrNpjJ38bk6vjmSTkACMsDVanwL4jGcHLyhvvQ6ddf26ZRkVu++9zb7x6aq0cLcbJQpVgqDci0cC2gqmZ315rVTzjqzJFrX3mP9d/+i2jj83KnFwHGYcR6WAA6saZXNgol0QTOhpCAvZa2Cpfw7mefX1n3zEqTUYs+I4Ii5ajJ+WgMYyNziSfMKj4aw9RdjZq8kwE8+LPTy5c/4vrpG5OTN9yHTs1VbCEruNbeqmdotM2e9h7UgRlZtgVUdeqTi58GR9PT1rz/wVHxVL0lMAvaZNT6vDY+GsPhq92bOJPZWu1ua7FOxdxOF4srLCFQZ8bNEk97DzqVP/jHltyXM378fsnfv2U8e24oPW3NG1VNh9t7amwFPq8NlXmgn0MbIYjX220PcRGNSinmr6y8sbfbjpIH+jiCkPrZ4B+74T4XCJ3wXdiW8/yhj89cuRqdq1gCgiPXxp0u9vPfXhXfvHI16nSxaPbxGwJLpUG9QUmRiukv5AEAwOlixcby899edbpYbP74yfPXxsbj2hoZHWNPD6bRqw99nFg/i9uNQ36hA3N3KFLuZ4PCPhhfEcvvae/JyLLV2Ao0ahITLh115tBwfLREJpPW7/fG6YBmdxd+NOxp79mw8Z0aW4FGRVKkvPt/Po9Evtpjb8XseYJIrd3bBgDZW9bHiUfIpPsOdHjaexx1ZkwLCfRzjz9Vbqk0oFnB/AJB8sEZRyQlZZnTxYq9B/EY3rw5ddx3flvO862Hf5Nw6BAP8jxY/uRjFCn/j397jedjOYb59qZLiMOKFcsppfyfa15NT1tDZ1TPo/weZKjyh3t3lRYz169/82Luew9QjGTEzvzMpoby8fHrZRWN85u2B7mC1z/39KqVssGLl+cxIUtIiFUrZeufe/rsuaFbBv6+BSk7324sHfgvciwRvMixRPAixxLBixxLBC9y/B9sZ759as+I3AAAAABJRU5ErkJggg==" alt="Logo"></div>
   <h1>Circuit Lab &nbsp;|&nbsp; Electricity, Magnetism &amp; Materials</h1>
   <div class="sp"></div>
+  <button class="btn" id="bTour">▶ Tutorial</button>
   <button class="btn ghost" id="bSave">Save</button>
   <button class="btn ghost" id="bLoad">Load</button>
   <button class="btn ghost" id="bExport">Export</button>
@@ -89,8 +105,6 @@ button,select{font-family:inherit}
       <button class="btn out" id="bClear">Clear board</button>
       <span class="lbl">Board</span>
       <select id="selBoard"><option value="7x5">7 × 5 kit baseboard</option><option value="11x7">11 × 7 large board</option></select>
-      <span class="lbl">Parts</span>
-      <select id="selKit"><option value="kit">Kit quantities</option><option value="free">Unlimited</option></select>
       <button class="btn out" id="bFlow">Current flow: ON</button>
       <button class="btn out" id="bSound">Sound: ON</button>
       <button class="btn" id="bFault">Insert hidden fault</button>
@@ -132,6 +146,9 @@ button,select{font-family:inherit}
   </aside>
 </div>
 <div id="toast"></div>
+<div id="tourShade"><div id="tourBlock"></div><div id="tourHole"></div>
+<div id="tourBox"><div class="th"><b id="tT"></b><span id="tN"></span></div><div class="tb" id="tB"></div><div class="dots" id="tD"></div>
+<div class="tf"><button class="btn out" id="tSkip">Skip tour</button><div class="sp"></div><button class="btn out" id="tBack">Back</button><button class="btn" id="tNext">Next</button></div></div></div>
 
 <script>
 /* =================== DATA =================== */
@@ -201,7 +218,7 @@ const EXPS=[
 ];
 
 /* =================== STATE =================== */
-const S={comps:[],sel:null,next:1,flow:true,sound:true,kit:true,fault:null,revealed:false,
+const S={comps:[],sel:null,next:1,flow:true,sound:true,kit:false,fault:null,revealed:false,
   meter:{mode:'V',red:{x:0,y:0,node:null},black:{x:0,y:0,node:null}},res:null};
 let drag=null;
 const svg=document.getElementById('ws');
@@ -521,10 +538,10 @@ function renderPalette(){
   const el=document.getElementById('palette');let h='',cat='';
   for(const it of ITEMS){
     if(it.cat!==cat){cat=it.cat;h+=`<h3>${cat}</h3>`;}
-    const left=S.kit?it.n-countUsed(it.k):'∞';
+    const left=Infinity;
     const ic=it.t==='relay'?`<svg viewBox="-60 -70 120 140"><rect x="-40" y="-60" width="80" height="120" rx="8" fill="#fff" stroke="${N_}" stroke-width="3"/><g transform="translate(0,-45)">${W(16)}<rect x="-16" y="-7" width="32" height="14" fill="#fff" stroke="${N_}" stroke-width="3"/></g><g transform="translate(0,45)">${sym('sw',{p:{on:false}})}</g></svg>`
       :`<svg viewBox="-55 -30 110 60">${sym(it.t,{p:it.p,_I:0})}</svg>`;
-    h+=`<div class="pi ${S.kit&&left<=0?'empty':''}" data-k="${it.k}" title="${it.d}">${ic}<span class="nm">${it.name}</span><span class="ct">${left}</span></div>`;
+    h+=`<div class="pi ${S.kit&&left<=0?'empty':''}" data-k="${it.k}" title="${it.d}">${ic}<span class="nm">${it.name}</span></div>`;
   }
   el.innerHTML=h;
 }
@@ -692,7 +709,6 @@ document.getElementById('bDel').onclick=()=>{if(S.sel)deleteSel();};
 document.getElementById('bClear').onclick=()=>{if(confirm('Remove all components from the board?')){S.comps=[];S.sel=null;clearFault();update(true);}};
 document.getElementById('bFlow').onclick=e=>{S.flow=!S.flow;e.target.textContent='Current flow: '+(S.flow?'ON':'OFF');renderComps();};
 document.getElementById('bSound').onclick=e=>{S.sound=!S.sound;e.target.textContent='Sound: '+(S.sound?'ON':'OFF');renderMeterDisplay();};
-document.getElementById('selKit').onchange=e=>{S.kit=e.target.value==='kit';renderPalette();};
 document.getElementById('selBoard').onchange=e=>{const [c,r]=e.target.value.split('x').map(Number);
   const fits=S.comps.every(x=>pts(x).every(p=>p[0]<c&&p[1]<r));
   if(!fits){toast('Some parts would be outside the smaller board. Move them first.');e.target.value=C+'x'+R;return;}
@@ -722,9 +738,80 @@ document.getElementById('exps').innerHTML='<h2>Experiments</h2><p>These guided a
  EXPS.map((x,i)=>`<details class="exp" ${i===0?'open':''}><summary>${x.t}</summary><div class="body"><p><b>Objective:</b> ${x.o}</p><ol>${x.st.map(s=>`<li>${s}</li>`).join('')}</ol><div class="q"><b>Think:</b> ${x.q}</div>${x.s?`<p><button class="btn" data-st="${x.s}">Load starter</button></p>`:''}</div></details>`).join('');
 document.getElementById('exps').addEventListener('click',e=>{const s=e.target.dataset.st;if(s)loadStarter(s);});
 
+
+/* =================== GUIDED TUTORIAL =================== */
+const BR=()=>svg.querySelector('rect');
+const MT=()=>document.querySelector('#gMeter > g');
+const PR=()=>document.getElementById('gProbes');
+const DIAL=()=>{const m=MT();if(!m)return null;return {getBoundingClientRect(){const r=m.getBoundingClientRect(),k=r.width/240;return new DOMRect(r.left+20*k,r.top+170*k,200*k,150*k);}};};
+const TOUR=[
+ {t:'Welcome to Ford Circuit Lab',el:null,b:'This short tour shows you how to <b>build circuits</b>, <b>change components</b> and <b>test circuits with the digital multimeter</b>.<br><br>Use <b>Next</b> and <b>Back</b>, or the <span class="kbd">→</span> and <span class="kbd">←</span> arrow keys. Press <span class="kbd">Esc</span> to close. You can restart the tour at any time with the <b>▶ Tutorial</b> button.'},
+ {t:'The parts list',el:()=>document.getElementById('palette'),pos:'right',b:'All the kit components are listed here by category, including power, connections, outputs, resistors, sensors, magnetism and meters.<ul><li>There is <b>no limit</b>, so you can use as many of each part as you need.</li><li>Hover over a part to see its description.</li></ul>'},
+ {t:'The baseboard',el:BR,pos:'right',b:'This is the digital baseboard. The pillars are labelled with <b>letters (columns)</b> and <b>numbers (rows)</b>, such as A1 or C3.<br><br>Each carrier connects <b>two neighbouring pillars</b>. Every carrier that meets at a pillar is electrically connected.'},
+ {t:'Placing a component',el:BR,pos:'right',b:'<b>Drag</b> a part from the list and drop it onto the board. A preview shows where it will go:<ul><li><b>Faded outline:</b> the position is valid.</li><li><b>Red outline:</b> the position is occupied or off the board.</li></ul>Press <span class="kbd">R</span> <b>while dragging</b> to rotate it between horizontal and vertical.',tr:'Try it after the tour: drag a <b>Power supply</b> onto the board.'},
+ {t:'Moving, selecting and controlling',el:BR,pos:'right',b:'<ul><li><b>Click</b> a carrier to select it. It turns blue.</li><li><b>Drag</b> a placed carrier to move it.</li><li><b>Click</b> an on/off switch to change it.</li><li><b>Press and hold</b> the push-to-make switch to close it.</li><li>Press <span class="kbd">Esc</span> to deselect.</li></ul>'},
+ {t:'The toolbar',el:()=>document.getElementById('toolbar'),pos:'bottom',b:'<ul><li><b>Rotate (R):</b> rotates the selected part. Rotating twice <b>reverses polarity</b>, which matters for diodes, LEDs and the supply.</li><li><b>Delete (Del):</b> removes the selected part.</li><li><b>Clear board:</b> removes everything.</li><li><b>Board:</b> switches between the 7 × 5 kit board and a large 11 × 7 board.</li><li><b>Current flow:</b> shows or hides the moving blue dots that show current.</li><li><b>Sound:</b> turns the buzzer and continuity beep on or off.</li></ul>'},
+ {t:'Component settings and live readings',el:()=>document.getElementById('side'),pos:'left',tab:'props',b:'When a part is selected, this panel shows its <b>settings</b> and <b>live readings</b> (voltage, current and power).<ul><li>Power supply: set 0–12 V and turn it ON or OFF.</li><li>Thermistor: set the temperature. Phototransistor: set the light level.</li><li>Potentiometer: move the wiper position.</li><li>Material carrier: choose copper, plastic, salt water and others.</li><li>Coil: fit or remove the iron core. Fuse: choose its rating.</li></ul>'},
+ {t:'Realistic behaviour',el:BR,pos:'right',b:'The circuit is recalculated every time you make a change:<ul><li>Lamps glow brighter as power increases. LEDs light only in the forward direction.</li><li>Motors spin, buzzers sound and coils show a magnetic field.</li><li>Overloaded resistors show <b>HOT!</b> Fuses and lamps can <b>blow</b>.</li><li>The supply <b>trips OFF</b> above 3 A if there is a short circuit.</li></ul>'},
+ {t:'The digital multimeter',el:MT,pos:'left',b:'Use this meter to take electrical measurements on any circuit. The display shows the reading and which pillars the probes are on.'},
+ {t:'Choosing a mode',el:DIAL,pos:'left',b:'Click a label around the dial to select a mode:<ul><li><b>OFF</b></li><li><b>V⎓:</b> DC voltage</li><li><b>Ω:</b> resistance</li><li><b>))):</b> continuity (beeps below 30 Ω)</li><li><b>A⎓:</b> DC current</li></ul>'},
+ {t:'Using the probes',el:PR,pos:'left',b:'<b>Drag the red and black probes</b> onto pillars. They lock on with a blue ring when you release them over a pillar.<br><br>Use <b>Return probes</b> (under the meter) to put them back.',tr:'<b>Voltage:</b> place the probes across a component.<br><b>Current:</b> remove a link and bridge the gap so that the meter is in <b>series</b>.<br><b>Ω / continuity:</b> switch the supply OFF first, or the meter shows <b>LIVE</b>.'},
+ {t:'Guided experiments',el:()=>document.querySelector('.tab[data-t="exps"]'),pos:'left',tab:'exps',b:'The <b>Experiments</b> tab has 10 activities that follow the kit learning objectives, from simple circuits to electromagnets and relays.<br><br>Many include a <b>Load starter</b> button that builds the circuit for you.'},
+ {t:'Fault-finding practice',el:()=>document.getElementById('bFault'),pos:'bottom',b:'<b>Insert hidden fault</b> adds a hidden open circuit or high-resistance joint to a random part of your circuit.<br><br>Use voltage-drop, resistance and continuity tests to find it, then select <b>Show fault</b> to check your diagnosis.'},
+ {t:'Saving your work',el:null,pos:'bottom',grp:['bSave','bLoad','bExport','bImport'],b:'<ul><li><b>Save / Load:</b> stores a circuit in this browser.</li><li><b>Export / Import:</b> saves a circuit as a file, so you can share it with colleagues or learners.</li></ul>'},
+ {t:'Help and tips',el:()=>document.querySelector('.tab[data-t="help"]'),pos:'left',tab:'help',b:'The <b>Help</b> tab lists all the controls and meter techniques.<br><br>You are now ready to build. A good place to start is <b>Experiment 1: Simple circuits</b>.'}
+];
+let TI=-1;
+function tabTo(t){const b=document.querySelector('.tab[data-t="'+t+'"]');if(b)b.click();}
+function tourRect(st){
+  try{
+    if(st.grp){const rs=st.grp.map(id=>document.getElementById(id)).filter(Boolean).map(e=>e.getBoundingClientRect());if(!rs.length)return null;
+      const l=Math.min(...rs.map(x=>x.left)),t=Math.min(...rs.map(x=>x.top)),r=Math.max(...rs.map(x=>x.right)),b=Math.max(...rs.map(x=>x.bottom));
+      return {left:l,top:t,right:r,bottom:b,width:r-l,height:b-t};}
+    if(st.el){const e=st.el();if(e){const r=e.getBoundingClientRect();if(r.width>0)return r;}}
+  }catch(err){}
+  return null;
+}
+function tourShow(i){
+  TI=i;const st=TOUR[i],sh=document.getElementById('tourShade'),hole=document.getElementById('tourHole'),box=document.getElementById('tourBox');
+  sh.style.display='block';if(st.tab)tabTo(st.tab);
+  document.getElementById('tT').textContent=st.t;document.getElementById('tN').textContent=(i+1)+' / '+TOUR.length;
+  document.getElementById('tB').innerHTML=st.b+(st.tr?'<div class="try">💡 '+st.tr+'</div>':'');
+  document.getElementById('tD').innerHTML=TOUR.map((_,k)=>'<i class="'+(k===i?'on':'')+'"></i>').join('');
+  document.getElementById('tBack').style.visibility=i?'visible':'hidden';
+  document.getElementById('tNext').textContent=i===TOUR.length-1?'Start building':'Next';
+  requestAnimationFrame(()=>{
+    const r=tourRect(st),bw=box.offsetWidth||340,bh=box.offsetHeight||260,vw=innerWidth,vh=innerHeight,pad=8;
+    let L,T;
+    if(!r){hole.style.cssText='left:'+(vw/2)+'px;top:'+(vh/2)+'px;width:0;height:0;border-width:0';L=(vw-bw)/2;T=(vh-bh)/2;}
+    else{
+      hole.style.cssText='left:'+(r.left-pad)+'px;top:'+(r.top-pad)+'px;width:'+(r.width+pad*2)+'px;height:'+(r.height+pad*2)+'px';
+      const p=st.pos||'bottom';
+      if(p==='right'){L=r.right+20;T=r.top+20;}
+      else if(p==='left'){L=r.left-bw-20;T=r.top+20;}
+      else {L=r.left;T=r.bottom+18;}
+      if(L+bw>vw-10||L<10){L=r.left+r.width/2-bw/2;T=r.bottom+18;if(T+bh>vh-10)T=r.top+40;}
+    }
+    box.style.left=Math.max(10,Math.min(vw-bw-10,L))+'px';
+    box.style.top=Math.max(10,Math.min(vh-bh-10,T))+'px';
+  });
+}
+function tourEnd(){document.getElementById('tourShade').style.display='none';TI=-1;tabTo('props');try{localStorage.setItem('fordCircuitLabTour','done');}catch(e){}}
+document.getElementById('tNext').onclick=()=>{if(TI<TOUR.length-1)tourShow(TI+1);else{tourEnd();toast('Have fun building! Select ▶ Tutorial to replay the tour.');}};
+document.getElementById('tBack').onclick=()=>{if(TI>0)tourShow(TI-1);};
+document.getElementById('tSkip').onclick=tourEnd;
+document.getElementById('bTour').onclick=()=>tourShow(0);
+window.addEventListener('keydown',e=>{if(TI<0)return;e.stopImmediatePropagation();e.preventDefault();
+  if(e.key==='ArrowRight'||e.key==='Enter')document.getElementById('tNext').click();
+  else if(e.key==='ArrowLeft')document.getElementById('tBack').click();
+  else if(e.key==='Escape')tourEnd();},true);
+window.addEventListener('resize',()=>{if(TI>=0)tourShow(TI);});
+
 /* =================== INIT =================== */
 const rs=probeRest();Object.assign(S.meter.red,rs.red);Object.assign(S.meter.black,rs.black);
 renderAll();update(true);
+let seen=null;try{seen=localStorage.getItem('fordCircuitLabTour');}catch(e){}
+if(!seen)setTimeout(()=>tourShow(0),500);
 </script>
 </body>
 </html>
